@@ -1348,8 +1348,7 @@ def C_AST_NODE_TO_STATES_LIST(
 # ex. if entered subroutine some clocks ago can't identify that entry point in history
 # TODO modify trans list to include multiple clk cycles in list for always being able
 # to correct determine exit point matching entry
-def FIND_EXIT_STATES(sub_func_name, parser_state, visited_states=set()):
-    debug = False
+def FIND_EXIT_STATES(sub_func_name, parser_state, visited_states=set(),debug=False):
     if debug:
         print(
             f"{parser_state.existing_logic.func_name} Trying exit states from sub {sub_func_name}..."
@@ -1391,9 +1390,8 @@ def FIND_EXIT_STATES(sub_func_name, parser_state, visited_states=set()):
     return exit_states
 
 
-def GET_STATE_TRANS_LISTS(start_state, parser_state, visited_states=None):
-    if visited_states is None:
-        visited_states = []
+def GET_STATE_TRANS_LISTS(start_state, parser_state, visited_states=[],debug=False):
+
     # print("start_state.name",start_state.name)
     # start_state.print()
     # print()
@@ -1401,8 +1399,6 @@ def GET_STATE_TRANS_LISTS(start_state, parser_state, visited_states=None):
     if start_state in visited_states:
         return [[]]  # [[start_state]]
     visited_states.append(start_state)
-
-    debug = False
 
     # Branch or pass through default next or clock(ends chain)?
     if start_state.ends_w_clk:
@@ -1975,7 +1971,7 @@ def C_AST_CTRL_FLOW_DOWHILE_TO_STATES(
     return states
 
 
-def C_AST_FSM_FUNDEF_BODY_TO_LOGIC(c_ast_func_def_body, parser_state):
+def C_AST_FSM_FUNDEF_BODY_TO_LOGIC(c_ast_func_def_body, parser_state,debug=False):
     # Start off with as parsed single file ordered list of states
     parser_state.existing_logic.fsm_subroutine_scope.append(
         parser_state.existing_logic.func_name
@@ -1998,7 +1994,6 @@ def C_AST_FSM_FUNDEF_BODY_TO_LOGIC(c_ast_func_def_body, parser_state):
     # parser_state.existing_logic.state_groups = GET_GROUPED_STATE_TRANSITIONS([states_list[0]], parser_state)
     # return parser_state.existing_logic
 
-    debug = False
 
     if debug:
         print("func states list:", parser_state.existing_logic.func_name)
@@ -2194,8 +2189,9 @@ def GET_GROUPED_STATE_TRANSITIONS(
     excluded_single_inst_subfsm_states_and_subreturn=False,
     excluded_single_inst_subentry_and_subfsm_states=False,
     excluded_states=set(),
+    debug = False
 ):
-    debug = False  # parser_state.existing_logic.func_name == "pixels_kernel_seq_range"
+    # parser_state.existing_logic.func_name == "pixels_kernel_seq_range"
 
     # Get state lists of all cases so far
     all_state_trans_lists = []
@@ -2222,7 +2218,7 @@ def GET_GROUPED_STATE_TRANSITIONS(
         list_len_to_trans_lists[l].append(state_trans_list)
 
     # How to add a transition list to a state groups
-    def append_trans_list(trans_list, state_groups, state_to_group_index):
+    def append_trans_list(trans_list, state_groups, state_to_group_index,debug=False):
         if debug:
             print(
                 "Appending transition list: current len(state_groups)",

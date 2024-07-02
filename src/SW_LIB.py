@@ -3949,8 +3949,8 @@ def GET_VAR_REF_RD_C_CODE(
     containing_func_logic,
     out_dir,
     parser_state,
+    debug=False
 ):
-    debug = False
     # @@@@ Need to solve can't reutnr arry and any type NMUX name problem (struct_t_muxN name?)
     ## Fuck need to put array in struct
     # Then need to allow cast from struct wray to array type in VHDL?

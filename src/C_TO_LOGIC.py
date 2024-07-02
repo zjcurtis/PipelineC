@@ -1143,8 +1143,7 @@ class Logic:
 
         return False
 
-    def REMOVE_WIRES_AND_SUBMODULES_RECURSIVE(self, wire, parser_state):
-        debug = False
+    def REMOVE_WIRES_AND_SUBMODULES_RECURSIVE(self, wire, parser_state,debug=False):
 
         # Stop recursion if reached special wire
         if self.WIRE_DO_NOT_COLLAPSE(wire, parser_state):
@@ -1236,8 +1235,8 @@ class Logic:
         output_port_names,
         parser_state,
         remove_global=True,
-    ):
         debug = False
+    ):
         if debug:
             print("removing sub inst", self.func_name, submodule_inst, flush=True)
 
@@ -3098,7 +3097,7 @@ def EXPAND_REF_TOKS_OR_STRS(ref_toks_or_strs, c_ast_ref, parser_state):
 _REF_TOKS_TO_OWN_BRANCH_REF_TOKS_cache = {}
 
 
-def REF_TOKS_TO_OWN_BRANCH_REF_TOKS(ref_toks, c_ast_ref, parser_state):
+def REF_TOKS_TO_OWN_BRANCH_REF_TOKS(ref_toks, c_ast_ref, parser_state,debug=False):
     # Try for cache
     if parser_state.existing_logic.func_name is None:
         print("Wtf none??????")
@@ -3111,7 +3110,6 @@ def REF_TOKS_TO_OWN_BRANCH_REF_TOKS(ref_toks, c_ast_ref, parser_state):
     except:
         pass
 
-    debug = False
     # Only return one level of extra branchs
     # Current c type
     # Get the CONST C type as evaulated (a,*,b) is like a[0].b
@@ -3174,9 +3172,7 @@ _REF_TOKS_TO_ENTIRE_TREE_REF_TOKS_cache = {}
 
 # Traverse compound types down to individual ref toks to collect all branches
 #  expanding variable refs along the way
-def REF_TOKS_TO_ENTIRE_TREE_REF_TOKS(ref_toks, c_ast_ref, parser_state):
-    debug = False
-
+def REF_TOKS_TO_ENTIRE_TREE_REF_TOKS(ref_toks, c_ast_ref, parser_state,debug=False):
     # Try for cache
     if parser_state.existing_logic.func_name is None:
         print("Wtf none??????")
@@ -3496,12 +3492,11 @@ def WIRE_TO_DRIVEN_REF_TOKS(wire, parser_state):
 # With cache runtime: 74.670 seconds, 304.788 seconds
 # Without cache runtime: 61.963 seconds, 210.264 seconds,
 def REMOVE_COVERED_REF_TOK_BRANCHES(
-    remaining_ref_toks_set, driven_ref_toks, c_ast_node, parser_state
+    remaining_ref_toks_set, driven_ref_toks, c_ast_node, parser_state,debug=False
 ):
     # print "remaining_ref_toks_set",remaining_ref_toks_set
     # print "driven_ref_toks",driven_ref_toks
     # print "=="
-    debug = False
     # debug = (parser_state.existing_logic.func_name == "VAR_REF_RD_uint8_t_64_uint8_t_64_64_VAR_4538") and driven_ref_toks==('base', 0, 63)
 
     if debug:
@@ -4006,8 +4001,7 @@ _C_AST_REF_TOKS_TO_C_TYPE_cache = {}
 
 
 # "Const" here means variable refs are evaluated x[*] = type of x[0]
-def C_AST_REF_TOKS_TO_CONST_C_TYPE(ref_toks, c_ast_ref, parser_state):
-    debug = False
+def C_AST_REF_TOKS_TO_CONST_C_TYPE(ref_toks, c_ast_ref, parser_state,debug=False):
     if debug:
         print("ref_toks", ref_toks)
     # Try to get cache
@@ -4192,10 +4186,9 @@ def C_AST_REF_TO_LOGIC(c_ast_ref, driven_wire_names, prepend_text, parser_state)
 
 # Does c_ast_ref need to be a ref or just for coord?
 def C_AST_REF_TOKS_TO_LOGIC(
-    ref_toks, c_ast_ref, driven_wire_names, prepend_text, parser_state
+    ref_toks, c_ast_ref, driven_wire_names, prepend_text, parser_state,debug=False
 ):
     # FUCK - its not so bad, dont worry
-    debug = False
 
     # The original variable name is the first tok
     base_var_name = ref_toks[0]
@@ -9322,7 +9315,7 @@ _TRIM_COLLAPSE_FUNC_DEFS_RECURSIVE_done_cache = set()
 
 
 # Wow this is post elab and includes adjustments to global table of instance names etc...
-def TRIM_COLLAPSE_FUNC_DEFS_RECURSIVE(func_logic, parser_state):
+def TRIM_COLLAPSE_FUNC_DEFS_RECURSIVE(func_logic, parser_state,debug=False):
     # Done already?
     if func_logic.func_name in _TRIM_COLLAPSE_FUNC_DEFS_RECURSIVE_done_cache:
         return parser_state
@@ -9339,7 +9332,6 @@ def TRIM_COLLAPSE_FUNC_DEFS_RECURSIVE(func_logic, parser_state):
             continue
         parser_state = TRIM_COLLAPSE_FUNC_DEFS_RECURSIVE(submodule_logic, parser_state)
 
-    debug = False
     # Then do for self
     parser_state.existing_logic = func_logic
     # Some code creates logic that will optimize away

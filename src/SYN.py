@@ -3182,8 +3182,7 @@ def DO_THROUGHPUT_SWEEP(
 # But starts from first module where any slice approaches timing goal
 # Middle out coarseness?
 # Modules can be locked/fixed in place and not sliced from above less accurately
-def DO_MIDDLE_OUT_THROUGHPUT_SWEEP(parser_state, sweep_state):
-    debug = False
+def DO_MIDDLE_OUT_THROUGHPUT_SWEEP(parser_state, sweep_state,debug=False):
 
     # Cache the multiple coarse runs
     coarse_slices_cache = {}
