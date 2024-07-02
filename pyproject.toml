@@ -1,4 +1,5 @@
 [tool.poetry]
+package-mode = false
 name = "pipelinec"
 version = "0.1.0"
 description = "A C-like hardware description language (HDL) adding high level synthesis(HLS)-like automatic pipelining as a language construct/compiler feature."
